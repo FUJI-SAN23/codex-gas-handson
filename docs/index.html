@@ -25,6 +25,8 @@
         --bg: #f8f9fa;
         --text: #1a1a1a;
         --dark-blue: #002266;
+        --danger: #cc0000;
+        --warning: #f39c12;
       }
 
       body {
@@ -276,7 +278,6 @@
         letter-spacing: 2px;
       }
 
-      /* タイムラインの修正（見切れ防止） */
       .timeline {
         display: flex;
         justify-content: space-between;
@@ -315,6 +316,14 @@
         font-size: 28px;
         margin-top: 15px;
         color: var(--dark-blue);
+      }
+
+      /* Icon Colors */
+      .danger-list li i {
+        color: var(--danger) !important;
+      }
+      .warning-list li i {
+        color: var(--warning) !important;
       }
     </style>
   </head>
@@ -399,12 +408,12 @@
             <tr>
               <td class="label">始めやすさ</td>
               <td class="highlight-col">◎ (Plusユーザー)</td>
-              <td>△ (API設定など)</td>
+              <td>△ (別途契約/設定)</td>
             </tr>
             <tr>
-              <td class="label">料金体系</td>
-              <td class="highlight-col">月額定額内</td>
-              <td>従量課金</td>
+              <td class="label">契約形態</td>
+              <td class="highlight-col">ChatGPT Plus内で完結</td>
+              <td>新たな定額契約等が必要</td>
             </tr>
           </tbody>
         </table>
@@ -453,7 +462,61 @@
         </div>
       </div>
 
-      <!-- Slide 6: 指示書 -->
+      <!-- Slide 6: 正直な話 (Claudeに劣る点) -->
+      <div class="slide">
+        <h2 class="slide-title">正直な話：Claude Codeに劣る点</h2>
+        <ul class="bullet-list warning-list">
+          <li>
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <strong>ネット上の情報量</strong><br />Claude
+            Codeの方がコミュニティや知見が豊富です。
+          </li>
+          <li>
+            <i class="fa-solid fa-gears"></i>
+            <strong>機能の豊富さ・使い勝手</strong
+            ><br />プロ向けツールとしての洗練度はClaudeがリードしています。
+          </li>
+          <li>
+            <i class="fa-solid fa-brain"></i> <strong>初見の扱いやすさ</strong
+            ><br />Codexは慣れるまで少し無骨に感じる場合があります。
+          </li>
+        </ul>
+        <p
+          style="
+            margin-top: 30px;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--dark-blue);
+            text-align: center;
+          "
+        >
+          「手軽なCodex」で感覚を掴み、「強力なClaude」へステップアップ
+        </p>
+      </div>
+
+      <!-- Slide 7: デメリット -->
+      <div class="slide">
+        <h2 class="slide-title">全体的な注意点</h2>
+        <ul class="bullet-list danger-list">
+          <li>
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <strong>「完璧」ではない</strong
+            ><br />間違ったコードを書いたり、ループすることがあります。
+          </li>
+          <li>
+            <i class="fa-solid fa-gauge-high"></i>
+            <strong>メッセージ消費が速い</strong
+            ><br />自動で何度もやり取りするため、上限に達しやすいです。
+          </li>
+          <li>
+            <i class="fa-solid fa-shield-halved"></i>
+            <strong>セキュリティの意識</strong
+            ><br />外部に漏らしてはいけない情報の扱いに注意が必要です。
+          </li>
+        </ul>
+      </div>
+
+      <!-- Slide 8: 指示書 -->
       <div class="slide">
         <h2 class="slide-title">指示書：AGENTS.md</h2>
         <div class="two-column" style="align-items: flex-start">
@@ -484,7 +547,7 @@
         </div>
       </div>
 
-      <!-- Slide 7: ゴール -->
+      <!-- Slide 9: ゴール -->
       <div class="slide">
         <h2 class="slide-title">本日のゴール</h2>
         <div class="timeline">
@@ -508,7 +571,7 @@
         </div>
       </div>
 
-      <!-- Slide 8: Q&A -->
+      <!-- Slide 10: Q&A -->
       <div class="slide">
         <div class="title-layout">
           <h1 style="font-size: 150px">Q & A</h1>
@@ -526,7 +589,7 @@
         </div>
       </div>
 
-      <div class="slide-number" id="pageNum">01 / 08</div>
+      <div class="slide-number" id="pageNum">01 / 10</div>
     </div>
 
     <div class="controls">
@@ -540,36 +603,52 @@
 
     <script>
       let currentSlide = 0;
-      const slides = document.querySelectorAll(".slide");
-      const prevBtn = document.getElementById("prevBtn");
-      const nextBtn = document.getElementById("nextBtn");
-      const pageNum = document.getElementById("pageNum");
 
       function changeSlide(direction) {
+        const slides = document.querySelectorAll(".slide");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const pageNum = document.getElementById("pageNum");
+
+        // 現在のスライドを非表示
         slides[currentSlide].classList.remove("active");
+
+        // インデックスを更新
         currentSlide += direction;
 
+        // 範囲制限
         if (currentSlide < 0) currentSlide = 0;
         if (currentSlide >= slides.length) currentSlide = slides.length - 1;
 
+        // 次のスライドを表示
         slides[currentSlide].classList.add("active");
 
-        // ボタンの制御
+        // ボタンの有効/無効切り替え
         prevBtn.disabled = currentSlide === 0;
         nextBtn.disabled = currentSlide === slides.length - 1;
 
-        // ページ番号更新 (01 / 08 形式)
+        // ページ番号更新
         const currentNum = String(currentSlide + 1).padStart(2, "0");
         const totalNum = String(slides.length).padStart(2, "0");
         pageNum.textContent = `${currentNum} / ${totalNum}`;
       }
 
-      // キーボード操作
+      // キーボード操作のリスナー登録
       document.addEventListener("keydown", (e) => {
-        if (e.key === "ArrowRight" || e.key === " " || e.key === "Enter")
+        if (e.key === "ArrowRight" || e.key === " " || e.key === "Enter") {
+          e.preventDefault();
           changeSlide(1);
-        if (e.key === "ArrowLeft") changeSlide(-1);
+        }
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          changeSlide(-1);
+        }
       });
+
+      // 初期化（念のため）
+      window.onload = () => {
+        changeSlide(0);
+      };
     </script>
   </body>
 </html>
