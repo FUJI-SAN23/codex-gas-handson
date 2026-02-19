@@ -14,321 +14,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <style>
-      /* 1. Base Settings */
-      * {
-        box-sizing: border-box;
-      }
-      :root {
-        --primary: #0044cc;
-        --accent: #00d4ff;
-        --bg: #f8f9fa;
-        --text: #1a1a1a;
-        --dark-blue: #002266;
-        --danger: #cc0000;
-        --warning: #f39c12;
-        --success: #27ae60;
-      }
-
-      body {
-        background-color: #e0e0e0;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        font-family: "Noto Sans JP", sans-serif;
-        overflow: hidden;
-      }
-
-      /* 2. Slide Viewport (16:9) */
-      .presentation-viewport {
-        width: 1280px;
-        height: 720px;
-        background-color: #ffffff;
-        border: 1px solid #ddd;
-        position: relative;
-        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
-
-      .slide {
-        display: none;
-        width: 100%;
-        height: 100%;
-        padding: 50px 80px;
-        flex-direction: column;
-        position: absolute;
-        top: 0;
-        left: 0;
-        transition: opacity 0.3s ease-in-out;
-        background: #fff;
-      }
-
-      .slide.active {
-        display: flex;
-      }
-
-      .content-area {
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        width: 100%;
-      }
-
-      /* 3. Typography & Titles */
-      .slide-title {
-        font-size: 56px;
-        font-weight: 900;
-        margin-bottom: 40px;
-        text-align: left;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        color: var(--dark-blue);
-      }
-
-      .slide-title::before {
-        content: "";
-        width: 12px;
-        height: 60px;
-        background: linear-gradient(to bottom, var(--primary), var(--accent));
-        margin-right: 25px;
-        border-radius: 4px;
-      }
-
-      p,
-      li,
-      td,
-      th {
-        font-size: 32px;
-        line-height: 1.5;
-        color: var(--text);
-      }
-
-      /* 4. Layout Components */
-      .title-layout {
-        text-align: center;
-        justify-content: center;
-        height: 100%;
-      }
-      .title-layout h1 {
-        font-size: 110px;
-        font-weight: 900;
-        color: var(--primary);
-        margin: 0;
-        background: linear-gradient(45deg, var(--dark-blue), var(--primary));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-
-      .title-badge {
-        margin-top: 40px;
-        font-size: 28px;
-        background: var(--dark-blue);
-        color: white;
-        display: inline-block;
-        padding: 12px 40px;
-        border-radius: 50px;
-        font-weight: bold;
-      }
-
-      .two-column {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 40px;
-        width: 100%;
-        align-items: center;
-      }
-
-      .card {
-        background-color: #fff;
-        border: 2px solid #eee;
-        padding: 35px;
-        border-radius: 20px;
-        text-align: center;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-        height: 100%;
-      }
-      .card i {
-        font-size: 70px;
-        margin-bottom: 20px;
-        color: var(--primary);
-      }
-      .card h3 {
-        font-size: 40px;
-        margin: 0 0 15px 0;
-        color: var(--dark-blue);
-      }
-
-      /* Comparison Table */
-      .compare-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-        border-radius: 15px;
-        overflow: hidden;
-        border: 2px solid #ddd;
-      }
-      .compare-table th,
-      .compare-table td {
-        padding: 20px;
-        text-align: center;
-        border-bottom: 1px solid #ddd;
-      }
-      .compare-table th {
-        background-color: #f4f7ff;
-        color: var(--dark-blue);
-        font-size: 28px;
-      }
-      .compare-table td {
-        font-size: 26px;
-      }
-
-      /* Slide 6 Fixed Layout */
-      .hero-layout {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 60px;
-        width: 100%;
-      }
-      .hero-big-text {
-        font-size: 220px;
-        font-weight: 900;
-        color: var(--primary);
-        line-height: 1;
-        flex-shrink: 0;
-      }
-      .hero-description {
-        flex-grow: 1;
-      }
-
-      .bullet-list {
-        list-style: none;
-        padding: 0;
-        width: 100%;
-      }
-      .bullet-list li {
-        position: relative;
-        padding-left: 80px;
-        margin-bottom: 30px;
-      }
-      .bullet-list li i {
-        position: absolute;
-        left: 0;
-        top: 10px;
-        color: var(--primary);
-        font-size: 44px;
-      }
-      .bullet-list li strong {
-        font-size: 38px;
-        color: var(--dark-blue);
-      }
-
-      .highlight-box {
-        background: linear-gradient(135deg, #fff700, #ffea00);
-        padding: 30px;
-        border-radius: 20px;
-        border: 2px solid #000;
-        width: 100%;
-        text-align: center;
-        margin-top: 20px;
-      }
-
-      /* 5. Navigation & Controls */
-      .controls {
-        position: fixed;
-        bottom: 20px;
-        display: flex;
-        gap: 15px;
-        z-index: 100;
-        background: rgba(255, 255, 255, 0.8);
-        padding: 10px;
-        border-radius: 40px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      }
-
-      .nav-btn {
-        background-color: var(--dark-blue);
-        color: #ffffff;
-        border: none;
-        width: 44px;
-        height: 44px;
-        font-size: 20px;
-        cursor: pointer;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s;
-      }
-
-      .nav-btn:hover:not(:disabled) {
-        transform: translateY(-2px);
-        background-color: var(--primary);
-      }
-      .nav-btn:disabled {
-        opacity: 0.2;
-        cursor: not-allowed;
-      }
-
-      .slide-number {
-        position: absolute;
-        bottom: 25px;
-        right: 40px;
-        font-size: 18px;
-        font-weight: bold;
-        color: #999;
-        letter-spacing: 2px;
-      }
-
-      .timeline {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        margin-top: 30px;
-        padding-top: 30px;
-        position: relative;
-      }
-      .timeline::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 5%;
-        width: 90%;
-        height: 4px;
-        background: #ddd;
-      }
-      .step {
-        text-align: center;
-        width: 24%;
-        position: relative;
-      }
-      .step::after {
-        content: "";
-        position: absolute;
-        top: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 16px;
-        height: 16px;
-        background: var(--primary);
-        border-radius: 50%;
-      }
-
-      .danger-list li i {
-        color: var(--danger) !important;
-      }
-      .warning-list li i {
-        color: var(--warning) !important;
-      }
-    </style>
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <div class="presentation-viewport">
@@ -351,20 +37,17 @@
               <h3>従来のAI</h3>
               <p>
                 <strong>「答える」</strong>のが仕事<br /><span
-                  style="font-size: 0.8em; color: #666"
+                  class="note-small-muted"
                   >（アドバイスまで）</span
                 >
               </p>
             </div>
-            <div
-              class="card"
-              style="border-color: var(--primary); background: #f0f7ff"
-            >
+            <div class="card card-emphasis">
               <i class="fa-solid fa-robot"></i>
               <h3>エージェント</h3>
               <p>
                 <strong>「動く」</strong>のが仕事<br /><span
-                  style="font-size: 0.8em; color: #666"
+                  class="note-small-muted"
                   >（作業の完遂まで）</span
                 >
               </p>
@@ -404,11 +87,7 @@
             <thead>
               <tr>
                 <th>比較項目</th>
-                <th
-                  style="background: #f0f4ff; border: 2px solid var(--primary)"
-                >
-                  Codex
-                </th>
+                <th class="compare-table__codex">Codex</th>
                 <th>Claude Code</th>
               </tr>
             </thead>
@@ -462,27 +141,13 @@
           <div class="hero-layout">
             <div class="hero-big-text">2x</div>
             <div class="hero-description">
-              <p
-                style="
-                  font-size: 48px;
-                  font-weight: 900;
-                  color: var(--dark-blue);
-                  margin-bottom: 10px;
-                "
-              >
+              <p class="hero-title">
                 利用上限が「2倍」！
               </p>
-              <p style="font-size: 28px; color: #666; margin-bottom: 30px">
+              <p class="hero-note">
                 （ChatGPT Plusユーザー限定特典）
               </p>
-              <p
-                style="
-                  font-size: 34px;
-                  color: var(--success);
-                  font-weight: bold;
-                  line-height: 1.2;
-                "
-              >
+              <p class="hero-message">
                 <i class="fa-solid fa-rocket"></i>
                 失敗を恐れず、何度でも<br />試行錯誤できる環境
               </p>
@@ -521,16 +186,10 @@
         <div class="content-area">
           <div class="two-column">
             <div class="card">
-              <p
-                style="
-                  font-weight: bold;
-                  font-size: 38px;
-                  color: var(--primary);
-                "
-              >
+              <p class="agent-heading">
                 プロジェクトの「法典」
               </p>
-              <p style="font-size: 28px; text-align: left; margin-top: 20px">
+              <p class="agent-text">
                 AIが最初に読み込み、基本ルールを自動で理解します。
               </p>
             </div>
@@ -549,22 +208,20 @@
         <div class="content-area">
           <div class="timeline">
             <div class="step">
-              <p style="font-weight: bold; font-size: 24px">慣れる</p>
+              <p class="step-label">慣れる</p>
             </div>
             <div class="step">
-              <p style="font-weight: bold; font-size: 24px">書く</p>
+              <p class="step-label">書く</p>
             </div>
             <div class="step">
-              <p style="font-weight: bold; font-size: 24px">作る</p>
+              <p class="step-label">作る</p>
             </div>
             <div class="step">
-              <p style="font-weight: bold; font-size: 24px">動く！</p>
+              <p class="step-label">動く！</p>
             </div>
           </div>
           <div class="highlight-box">
-            <p
-              style="font-size: 42px; font-weight: 900; margin: 0; color: #000"
-            >
+            <p class="highlight-message">
               「説明する力」が「開発力」になる
             </p>
           </div>
@@ -574,16 +231,9 @@
       <!-- Slide 10 -->
       <div class="slide">
         <div class="title-layout">
-          <h1 style="font-size: 150px">Q & A</h1>
+          <h1 class="qa-title">Q & A</h1>
           <p class="subtitle">ご質問はありますか？</p>
-          <div
-            style="
-              margin-top: 60px;
-              font-size: 36px;
-              color: var(--primary);
-              font-weight: bold;
-            "
-          >
+          <div class="qa-start">
             準備ができたらハンズオン開始！
           </div>
         </div>
@@ -601,54 +251,6 @@
       </button>
     </div>
 
-    <script>
-      let activeIndex = 0;
-
-      function updateSlide(step) {
-        const slides = document.querySelectorAll(".slide");
-        const prevBtn = document.getElementById("prevBtn");
-        const nextBtn = document.getElementById("nextBtn");
-        const pageNum = document.getElementById("pageNumDisplay");
-
-        // Hide current
-        slides[activeIndex].classList.remove("active");
-
-        // Update index
-        activeIndex += step;
-
-        // Clamp
-        if (activeIndex < 0) activeIndex = 0;
-        if (activeIndex >= slides.length) activeIndex = slides.length - 1;
-
-        // Show new
-        slides[activeIndex].classList.add("active");
-
-        // Update buttons
-        prevBtn.disabled = activeIndex === 0;
-        nextBtn.disabled = activeIndex === slides.length - 1;
-
-        // Update page number
-        const current = String(activeIndex + 1).padStart(2, "0");
-        const total = String(slides.length).padStart(2, "0");
-        pageNum.textContent = `${current} / ${total}`;
-      }
-
-      // Keyboard controls
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "ArrowRight" || e.key === " " || e.key === "Enter") {
-          e.preventDefault();
-          updateSlide(1);
-        }
-        if (e.key === "ArrowLeft") {
-          e.preventDefault();
-          updateSlide(-1);
-        }
-      });
-
-      // Initialize display on load
-      window.onload = () => {
-        updateSlide(0);
-      };
-    </script>
+    <script src="./slides.js" defer></script>
   </body>
 </html>
