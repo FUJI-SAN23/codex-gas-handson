@@ -1,0 +1,10 @@
+# macOS
+.DS_Store
+
+# Playwright local artifacts
+.playwright-browsers/
+output/playwright/
+
+# Environment/local files
+.env
+.env.*
