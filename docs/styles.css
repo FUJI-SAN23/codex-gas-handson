@@ -4,6 +4,16 @@
 }
 
 :root {
+  --slide-w: 1280;
+  --slide-h: 720;
+  --viewport-padding-x: 24px;
+  --controls-space: 92px;
+  --slide-scale: min(
+    1,
+    (100vw - var(--viewport-padding-x)) / (var(--slide-w) * 1px),
+    (100vh - var(--controls-space) - env(safe-area-inset-bottom, 0px)) /
+      (var(--slide-h) * 1px)
+  );
   --primary: #0044cc;
   --accent: #00d4ff;
   --bg: #f8f9fa;
@@ -17,6 +27,7 @@
 body {
   background-color: #e0e0e0;
   margin: 0;
+  padding: 12px 12px calc(72px + env(safe-area-inset-bottom, 0px)) 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,8 +39,8 @@ body {
 
 /* 2. Slide Viewport (16:9) */
 .presentation-viewport {
-  width: 1280px;
-  height: 720px;
+  width: calc(var(--slide-w) * 1px * var(--slide-scale));
+  height: calc(var(--slide-h) * 1px * var(--slide-scale));
   background-color: #ffffff;
   border: 1px solid #ddd;
   position: relative;
@@ -312,7 +323,7 @@ th {
 /* 5. Navigation & Controls */
 .controls {
   position: fixed;
-  bottom: 20px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   display: flex;
   gap: 15px;
   z-index: 100;
