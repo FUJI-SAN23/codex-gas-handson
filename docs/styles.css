@@ -530,10 +530,25 @@ th {
 @media (max-width: 768px) {
   :root {
     --controls-space: 82px;
+    --slide-scale: 1;
+  }
+
+  body {
+    padding: 8px 8px calc(70px + env(safe-area-inset-bottom, 0px)) 8px;
+    overflow: hidden;
+  }
+
+  .presentation-viewport {
+    width: 100%;
+    max-width: 480px;
+    height: calc(100vh - 92px - env(safe-area-inset-bottom, 0px));
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
   }
 
   .slide {
     padding: 20px 22px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .slide-title {
@@ -573,6 +588,10 @@ th {
   .two-column {
     grid-template-columns: 1fr;
     gap: 12px;
+  }
+
+  .content-area {
+    justify-content: flex-start;
   }
 
   .card {
@@ -699,6 +718,11 @@ th {
 @media (max-width: 480px) {
   :root {
     --viewport-padding-x: 12px;
+  }
+
+  .presentation-viewport {
+    max-width: 100%;
+    height: calc(100vh - 84px - env(safe-area-inset-bottom, 0px));
   }
 
   .slide {
