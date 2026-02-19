@@ -413,3 +413,345 @@ th {
 .warning-list li i {
   color: var(--warning) !important;
 }
+
+/* Responsive Layout */
+@media (max-width: 1024px) {
+  .slide {
+    padding: 34px 44px;
+  }
+
+  .slide-title {
+    font-size: 38px;
+    margin-bottom: 24px;
+  }
+
+  .slide-title::before {
+    width: 8px;
+    height: 42px;
+    margin-right: 14px;
+  }
+
+  p,
+  li,
+  td,
+  th {
+    font-size: 21px;
+    line-height: 1.35;
+  }
+
+  .title-layout h1 {
+    font-size: 70px;
+  }
+
+  .subtitle {
+    font-size: 28px;
+  }
+
+  .title-badge {
+    margin-top: 20px;
+    font-size: 20px;
+    padding: 8px 24px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .card h3 {
+    font-size: 30px;
+  }
+
+  .card i {
+    font-size: 48px;
+  }
+
+  .compare-table th,
+  .compare-table td {
+    padding: 12px;
+  }
+
+  .compare-table th {
+    font-size: 22px;
+  }
+
+  .compare-table td {
+    font-size: 20px;
+  }
+
+  .bullet-list li {
+    padding-left: 52px;
+    margin-bottom: 18px;
+  }
+
+  .bullet-list li i {
+    top: 2px;
+    font-size: 28px;
+  }
+
+  .bullet-list li strong,
+  .agent-heading,
+  .hero-title {
+    font-size: 30px;
+  }
+
+  .agent-text,
+  .hero-note,
+  .hero-message {
+    font-size: 22px;
+  }
+
+  .hero-layout {
+    gap: 28px;
+  }
+
+  .hero-big-text {
+    font-size: 130px;
+  }
+
+  .highlight-box {
+    margin-top: 12px;
+    padding: 16px;
+  }
+
+  .highlight-message {
+    font-size: 30px;
+  }
+
+  .qa-title {
+    font-size: 90px;
+  }
+
+  .qa-start {
+    margin-top: 28px;
+    font-size: 26px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --controls-space: 82px;
+  }
+
+  .slide {
+    padding: 20px 22px;
+  }
+
+  .slide-title {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+
+  .slide-title::before {
+    width: 6px;
+    height: 30px;
+    margin-right: 10px;
+  }
+
+  p,
+  li,
+  td,
+  th {
+    font-size: 16px;
+    line-height: 1.3;
+  }
+
+  .title-layout h1 {
+    font-size: 48px;
+  }
+
+  .subtitle {
+    font-size: 20px;
+    margin: 12px 0 0;
+  }
+
+  .title-badge {
+    margin-top: 14px;
+    font-size: 14px;
+    padding: 6px 14px;
+  }
+
+  .two-column {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .card {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .card h3 {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+
+  .card i {
+    font-size: 34px;
+    margin-bottom: 10px;
+  }
+
+  .compare-table th,
+  .compare-table td {
+    padding: 8px 6px;
+  }
+
+  .compare-table th {
+    font-size: 14px;
+  }
+
+  .compare-table td {
+    font-size: 13px;
+  }
+
+  .bullet-list li {
+    padding-left: 28px;
+    margin-bottom: 10px;
+  }
+
+  .bullet-list li i {
+    top: 1px;
+    font-size: 18px;
+  }
+
+  .bullet-list li strong,
+  .agent-heading,
+  .hero-title {
+    font-size: 18px;
+  }
+
+  .agent-text,
+  .hero-note,
+  .hero-message {
+    font-size: 14px;
+    margin-top: 8px;
+    margin-bottom: 10px;
+  }
+
+  .hero-layout {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .hero-big-text {
+    font-size: 72px;
+  }
+
+  .timeline {
+    margin-top: 8px;
+    padding-top: 14px;
+  }
+
+  .timeline::before {
+    height: 2px;
+  }
+
+  .step::after {
+    width: 10px;
+    height: 10px;
+    top: -6px;
+  }
+
+  .step-label {
+    font-size: 12px;
+    margin: 8px 0 0;
+  }
+
+  .highlight-box {
+    margin-top: 8px;
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+  .highlight-message {
+    font-size: 18px;
+  }
+
+  .qa-title {
+    font-size: 52px;
+  }
+
+  .qa-start {
+    margin-top: 16px;
+    font-size: 16px;
+  }
+
+  .slide-number {
+    bottom: 8px;
+    right: 12px;
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+
+  .controls {
+    gap: 8px;
+    padding: 8px;
+    border-radius: 24px;
+  }
+
+  .nav-btn {
+    width: 34px;
+    height: 34px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --viewport-padding-x: 12px;
+  }
+
+  .slide {
+    padding: 14px 14px;
+  }
+
+  .slide-title {
+    font-size: 22px;
+  }
+
+  p,
+  li,
+  td,
+  th {
+    font-size: 13px;
+  }
+
+  .title-layout h1 {
+    font-size: 38px;
+  }
+
+  .subtitle {
+    font-size: 16px;
+  }
+
+  .title-badge {
+    font-size: 12px;
+    padding: 4px 10px;
+  }
+
+  .compare-table th {
+    font-size: 12px;
+  }
+
+  .compare-table td {
+    font-size: 11px;
+  }
+
+  .bullet-list li strong,
+  .agent-heading,
+  .hero-title {
+    font-size: 15px;
+  }
+
+  .hero-big-text {
+    font-size: 58px;
+  }
+
+  .highlight-message {
+    font-size: 15px;
+  }
+
+  .qa-title {
+    font-size: 40px;
+  }
+}
