@@ -143,6 +143,28 @@
         line-height: 1;
       }
 
+      /* Comparison Table */
+      .compare-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      .compare-table th,
+      .compare-table td {
+        border: 3px solid #000;
+        padding: 20px;
+        text-align: center;
+      }
+      .compare-table th {
+        background-color: #eee;
+        font-weight: bold;
+      }
+      .compare-table .label {
+        text-align: left;
+        background-color: #f9f9f9;
+        width: 250px;
+      }
+
       /* 5. SMALL NAVIGATION CONTROLS */
       .controls {
         position: fixed;
@@ -156,7 +178,7 @@
         background-color: #000000;
         color: #ffffff;
         border: 2px solid #000000;
-        width: 45px; /* 一回り小さく調整 */
+        width: 45px;
         height: 45px;
         font-size: 24px;
         font-weight: bold;
@@ -270,6 +292,50 @@
         </ul>
       </div>
 
+      <!-- New Slide: Comparison -->
+      <div class="slide">
+        <h2 class="slide-title">Codex vs Claude Code</h2>
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th class="label">比較項目</th>
+              <th style="color: #0044cc">Codex (OpenAI)</th>
+              <th>Claude Code (Anthropic)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="label">主な強み</td>
+              <td>ChatGPTとの高い親和性</td>
+              <td>論理的思考と正確なコード</td>
+            </tr>
+            <tr>
+              <td class="label">始めやすさ</td>
+              <td>◎ (Plusユーザーは即可能)</td>
+              <td>△ (API設定が必要な場合も)</td>
+            </tr>
+            <tr>
+              <td class="label">利用料金</td>
+              <td>月額定額内</td>
+              <td>従量課金 / プラン別</td>
+            </tr>
+          </tbody>
+        </table>
+        <p
+          style="
+            margin-top: 30px;
+            font-size: 28px;
+            text-align: center;
+            width: 100%;
+          "
+        >
+          <strong>結論：</strong> 本日は「一番手軽に始められる」<strong
+            >Codex</strong
+          >
+          を使います。
+        </p>
+      </div>
+
       <!-- Slide 4 -->
       <div class="slide">
         <h2 class="slide-title">今だけのメリット</h2>
@@ -346,7 +412,7 @@
         </div>
       </div>
 
-      <div class="slide-number" id="pageNum">1 / 7</div>
+      <div class="slide-number" id="pageNum">1 / 8</div>
     </div>
 
     <div class="controls">
