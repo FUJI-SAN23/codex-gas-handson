@@ -15,7 +15,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
     <style>
-      /* 1. 全体設定 */
+      /* 1. Base Settings */
       * {
         box-sizing: border-box;
       }
@@ -27,6 +27,7 @@
         --dark-blue: #002266;
         --danger: #cc0000;
         --warning: #f39c12;
+        --success: #27ae60;
       }
 
       body {
@@ -41,7 +42,7 @@
         overflow: hidden;
       }
 
-      /* 2. スライドコンテナ (16:9) */
+      /* 2. Slide Viewport (16:9) */
       .presentation-viewport {
         width: 1280px;
         height: 720px;
@@ -64,13 +65,22 @@
         top: 0;
         left: 0;
         transition: opacity 0.3s ease-in-out;
+        background: #fff;
       }
 
       .slide.active {
         display: flex;
       }
 
-      /* 3. タイポグラフィと装飾 */
+      .content-area {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 100%;
+      }
+
+      /* 3. Typography & Titles */
       .slide-title {
         font-size: 56px;
         font-weight: 900;
@@ -100,7 +110,7 @@
         color: var(--text);
       }
 
-      /* 4. レイアウトパーツ */
+      /* 4. Layout Components */
       .title-layout {
         text-align: center;
         justify-content: center;
@@ -111,17 +121,11 @@
         font-weight: 900;
         color: var(--primary);
         margin: 0;
-        letter-spacing: -2px;
         background: linear-gradient(45deg, var(--dark-blue), var(--primary));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
       }
-      .title-layout .subtitle {
-        font-size: 42px;
-        font-weight: bold;
-        margin-top: 10px;
-        color: #666;
-      }
+
       .title-badge {
         margin-top: 40px;
         font-size: 28px;
@@ -161,6 +165,49 @@
         color: var(--dark-blue);
       }
 
+      /* Comparison Table */
+      .compare-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 15px;
+        overflow: hidden;
+        border: 2px solid #ddd;
+      }
+      .compare-table th,
+      .compare-table td {
+        padding: 20px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+      }
+      .compare-table th {
+        background-color: #f4f7ff;
+        color: var(--dark-blue);
+        font-size: 28px;
+      }
+      .compare-table td {
+        font-size: 26px;
+      }
+
+      /* Slide 6 Fixed Layout */
+      .hero-layout {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 60px;
+        width: 100%;
+      }
+      .hero-big-text {
+        font-size: 220px;
+        font-weight: 900;
+        color: var(--primary);
+        line-height: 1;
+        flex-shrink: 0;
+      }
+      .hero-description {
+        flex-grow: 1;
+      }
+
       .bullet-list {
         list-style: none;
         padding: 0;
@@ -183,43 +230,6 @@
         color: var(--dark-blue);
       }
 
-      /* Comparison Table */
-      .compare-table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0;
-        margin-top: 10px;
-        border-radius: 15px;
-        overflow: hidden;
-        border: 2px solid #ddd;
-      }
-      .compare-table th,
-      .compare-table td {
-        padding: 20px;
-        text-align: center;
-        border-bottom: 1px solid #ddd;
-      }
-      .compare-table th {
-        background-color: #f4f7ff;
-        color: var(--dark-blue);
-        font-size: 28px;
-      }
-      .compare-table td {
-        font-size: 26px;
-      }
-      .compare-table .label {
-        text-align: left;
-        background-color: #fafafa;
-        font-weight: bold;
-        width: 220px;
-      }
-      .compare-table .highlight-col {
-        background-color: #f0f4ff;
-        font-weight: bold;
-        border-left: 2px solid var(--primary);
-        border-right: 2px solid var(--primary);
-      }
-
       .highlight-box {
         background: linear-gradient(135deg, #fff700, #ffea00);
         padding: 30px;
@@ -230,7 +240,7 @@
         margin-top: 20px;
       }
 
-      /* 5. ナビゲーション */
+      /* 5. Navigation & Controls */
       .controls {
         position: fixed;
         bottom: 20px;
@@ -248,9 +258,9 @@
         background-color: var(--dark-blue);
         color: #ffffff;
         border: none;
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
         cursor: pointer;
         border-radius: 50%;
         display: flex;
@@ -311,14 +321,7 @@
         background: var(--primary);
         border-radius: 50%;
       }
-      .step-label {
-        font-weight: bold;
-        font-size: 28px;
-        margin-top: 15px;
-        color: var(--dark-blue);
-      }
 
-      /* Icon Colors */
       .danger-list li i {
         color: var(--danger) !important;
       }
@@ -329,7 +332,7 @@
   </head>
   <body>
     <div class="presentation-viewport">
-      <!-- Slide 1: タイトル -->
+      <!-- Slide 1 -->
       <div class="slide active">
         <div class="title-layout">
           <h1>Codex 勉強会</h1>
@@ -338,244 +341,241 @@
         </div>
       </div>
 
-      <!-- Slide 2: 定義 -->
+      <!-- Slide 2 -->
       <div class="slide">
         <h2 class="slide-title">AIエージェントとは？</h2>
-        <div class="two-column">
-          <div class="card">
-            <i class="fa-solid fa-comments"></i>
-            <h3>従来のAI</h3>
-            <p>
-              <strong>「答える」</strong>のが仕事<br /><span
-                style="font-size: 0.8em; color: #666"
-                >（アドバイスまで）</span
-              >
-            </p>
-          </div>
-          <div
-            class="card"
-            style="border-color: var(--primary); background: #f0f7ff"
-          >
-            <i class="fa-solid fa-robot"></i>
-            <h3>エージェント</h3>
-            <p>
-              <strong>「動く」</strong>のが仕事<br /><span
-                style="font-size: 0.8em; color: #666"
-                >（作業の完遂まで）</span
-              >
-            </p>
+        <div class="content-area">
+          <div class="two-column">
+            <div class="card">
+              <i class="fa-solid fa-comments"></i>
+              <h3>従来のAI</h3>
+              <p>
+                <strong>「答える」</strong>のが仕事<br /><span
+                  style="font-size: 0.8em; color: #666"
+                  >（アドバイスまで）</span
+                >
+              </p>
+            </div>
+            <div
+              class="card"
+              style="border-color: var(--primary); background: #f0f7ff"
+            >
+              <i class="fa-solid fa-robot"></i>
+              <h3>エージェント</h3>
+              <p>
+                <strong>「動く」</strong>のが仕事<br /><span
+                  style="font-size: 0.8em; color: #666"
+                  >（作業の完遂まで）</span
+                >
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Slide 3: 特徴 -->
+      <!-- Slide 3 -->
       <div class="slide">
         <h2 class="slide-title">Codex の特徴</h2>
-        <ul class="bullet-list">
-          <li>
-            <i class="fa-solid fa-terminal"></i> <strong>黒い画面で操作</strong
-            ><br />PCに直接命令を届けます。
-          </li>
-          <li>
-            <i class="fa-solid fa-code-merge"></i>
-            <strong>言葉をプログラムに</strong
-            ><br />やりたいことを説明するだけ。
-          </li>
-          <li>
-            <i class="fa-solid fa-circle-check"></i>
-            <strong>ChatGPT 有料版</strong><br />既存のアカウントで即利用可能。
-          </li>
-        </ul>
-      </div>
-
-      <!-- Slide 4: 比較 -->
-      <div class="slide">
-        <h2 class="slide-title">Codex vs Claude Code</h2>
-        <table class="compare-table">
-          <thead>
-            <tr>
-              <th class="label">比較項目</th>
-              <th class="highlight-col">Codex</th>
-              <th>Claude Code</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="label">主な強み</td>
-              <td class="highlight-col">ChatGPTとの親和性</td>
-              <td>論理的な正確さ</td>
-            </tr>
-            <tr>
-              <td class="label">始めやすさ</td>
-              <td class="highlight-col">◎ (Plusユーザー)</td>
-              <td>△ (別途契約/設定)</td>
-            </tr>
-            <tr>
-              <td class="label">契約形態</td>
-              <td class="highlight-col">ChatGPT Plus内で完結</td>
-              <td>新たな定額契約等が必要</td>
-            </tr>
-          </tbody>
-        </table>
-        <p
-          style="
-            margin-top: 25px;
-            font-size: 28px;
-            text-align: center;
-            color: var(--primary);
-            font-weight: bold;
-          "
-        >
-          手軽に始められる「Codex」を本日使います
-        </p>
-      </div>
-
-      <!-- Slide 5: メリット -->
-      <div class="slide">
-        <h2 class="slide-title">今だけのメリット</h2>
-        <div
-          style="
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 40px;
-          "
-        >
-          <div
-            style="
-              font-size: 200px;
-              font-weight: 900;
-              color: var(--primary);
-              line-height: 1;
-            "
-          >
-            2x
-          </div>
-          <div>
-            <p style="font-size: 44px; font-weight: bold; margin: 0">
-              利用上限が「2倍」！
-            </p>
-            <p style="margin-top: 10px; color: #666">
-              たっぷり試せる最高のタイミングです。
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Slide 6: 正直な話 (Claudeに劣る点) -->
-      <div class="slide">
-        <h2 class="slide-title">正直な話：Claude Codeに劣る点</h2>
-        <ul class="bullet-list warning-list">
-          <li>
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <strong>ネット上の情報量</strong><br />Claude
-            Codeの方がコミュニティや知見が豊富です。
-          </li>
-          <li>
-            <i class="fa-solid fa-gears"></i>
-            <strong>機能の豊富さ・使い勝手</strong
-            ><br />プロ向けツールとしての洗練度はClaudeがリードしています。
-          </li>
-          <li>
-            <i class="fa-solid fa-brain"></i> <strong>初見の扱いやすさ</strong
-            ><br />Codexは慣れるまで少し無骨に感じる場合があります。
-          </li>
-        </ul>
-        <p
-          style="
-            margin-top: 30px;
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--dark-blue);
-            text-align: center;
-          "
-        >
-          「手軽なCodex」で感覚を掴み、「強力なClaude」へステップアップ
-        </p>
-      </div>
-
-      <!-- Slide 7: デメリット -->
-      <div class="slide">
-        <h2 class="slide-title">全体的な注意点</h2>
-        <ul class="bullet-list danger-list">
-          <li>
-            <i class="fa-solid fa-triangle-exclamation"></i>
-            <strong>「完璧」ではない</strong
-            ><br />間違ったコードを書いたり、ループすることがあります。
-          </li>
-          <li>
-            <i class="fa-solid fa-gauge-high"></i>
-            <strong>メッセージ消費が速い</strong
-            ><br />自動で何度もやり取りするため、上限に達しやすいです。
-          </li>
-          <li>
-            <i class="fa-solid fa-shield-halved"></i>
-            <strong>セキュリティの意識</strong
-            ><br />外部に漏らしてはいけない情報の扱いに注意が必要です。
-          </li>
-        </ul>
-      </div>
-
-      <!-- Slide 8: 指示書 -->
-      <div class="slide">
-        <h2 class="slide-title">指示書：AGENTS.md</h2>
-        <div class="two-column" style="align-items: flex-start">
-          <div class="card">
-            <p
-              style="font-weight: bold; font-size: 38px; color: var(--primary)"
-            >
-              プロジェクトの「法典」
-            </p>
-            <p style="font-size: 28px; text-align: left; margin-top: 20px">
-              AIが最初に読み込み、<br />基本ルールを自動で理解します。
-            </p>
-          </div>
-          <ul class="bullet-list" style="margin-top: 10px">
-            <li style="font-size: 28px; margin-bottom: 20px">
-              <i class="fa-solid fa-check-double" style="font-size: 32px"></i>
-              仕様の書き込み
+        <div class="content-area">
+          <ul class="bullet-list">
+            <li>
+              <i class="fa-solid fa-terminal"></i>
+              <strong>黒い画面で操作</strong><br />PCに直接命令を届けます。
             </li>
-            <li style="font-size: 28px; margin-bottom: 20px">
-              <i class="fa-solid fa-check-double" style="font-size: 32px"></i>
-              手順の指定
+            <li>
+              <i class="fa-solid fa-code-merge"></i>
+              <strong>言葉をプログラムに</strong
+              ><br />やりたいことを説明するだけ。
             </li>
-            <li style="font-size: 28px; margin-bottom: 20px">
-              <i class="fa-solid fa-check-double" style="font-size: 32px"></i>
-              繰り返しの説明を省く
+            <li>
+              <i class="fa-solid fa-circle-check"></i>
+              <strong>ChatGPT 有料版</strong
+              ><br />既存のアカウントで即利用可能。
             </li>
           </ul>
         </div>
       </div>
 
-      <!-- Slide 9: ゴール -->
+      <!-- Slide 4 -->
       <div class="slide">
-        <h2 class="slide-title">本日のゴール</h2>
-        <div class="timeline">
-          <div class="step">
-            <div class="step-label">画面に<br />慣れる</div>
-          </div>
-          <div class="step">
-            <div class="step-label">指示を<br />書く</div>
-          </div>
-          <div class="step">
-            <div class="step-label">AIが<br />作る</div>
-          </div>
-          <div class="step">
-            <div class="step-label">動く！<br />を体験</div>
-          </div>
-        </div>
-        <div class="highlight-box">
-          <p style="font-size: 42px; font-weight: 900; margin: 0; color: #000">
-            「説明する力」が「開発力」になる
-          </p>
+        <h2 class="slide-title">Codex vs Claude Code</h2>
+        <div class="content-area">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>比較項目</th>
+                <th
+                  style="background: #f0f4ff; border: 2px solid var(--primary)"
+                >
+                  Codex
+                </th>
+                <th>Claude Code</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>主な強み</td>
+                <td>ChatGPTとの親和性</td>
+                <td>論理的な正確さ</td>
+              </tr>
+              <tr>
+                <td>始めやすさ</td>
+                <td>◎ (Plusユーザー)</td>
+                <td>△ (別途契約)</td>
+              </tr>
+              <tr>
+                <td>契約形態</td>
+                <td>Plus内で完結</td>
+                <td>新たな契約が必要</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
-      <!-- Slide 10: Q&A -->
+      <!-- Slide 5 -->
+      <div class="slide">
+        <h2 class="slide-title">正直な話：Claude Codeに劣る点</h2>
+        <div class="content-area">
+          <ul class="bullet-list warning-list">
+            <li>
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <strong>ネット上の情報量</strong><br />Claude
+              Codeの方がコミュニティが豊富。
+            </li>
+            <li>
+              <i class="fa-solid fa-gears"></i> <strong>機能の豊富さ</strong
+              ><br />プロ向けツールとしてはClaudeが洗練。
+            </li>
+            <li>
+              <i class="fa-solid fa-brain"></i> <strong>初見の扱いやすさ</strong
+              ><br />Codexは少し無骨に感じる場合があります。
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Slide 6 (Layout Fixed) -->
+      <div class="slide">
+        <h2 class="slide-title">今、Codexを選ぶ最大の理由</h2>
+        <div class="content-area">
+          <div class="hero-layout">
+            <div class="hero-big-text">2x</div>
+            <div class="hero-description">
+              <p
+                style="
+                  font-size: 48px;
+                  font-weight: 900;
+                  color: var(--dark-blue);
+                  margin-bottom: 10px;
+                "
+              >
+                利用上限が「2倍」！
+              </p>
+              <p style="font-size: 28px; color: #666; margin-bottom: 30px">
+                （ChatGPT Plusユーザー限定特典）
+              </p>
+              <p
+                style="
+                  font-size: 34px;
+                  color: var(--success);
+                  font-weight: bold;
+                  line-height: 1.2;
+                "
+              >
+                <i class="fa-solid fa-rocket"></i>
+                失敗を恐れず、何度でも<br />試行錯誤できる環境
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 7 -->
+      <div class="slide">
+        <h2 class="slide-title">利用上の注意点（デメリット）</h2>
+        <div class="content-area">
+          <ul class="bullet-list danger-list">
+            <li>
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <strong>「完璧」ではない</strong
+              ><br />間違ったコードやループの可能性。
+            </li>
+            <li>
+              <i class="fa-solid fa-gauge-high"></i>
+              <strong>メッセージ消費が速い</strong
+              ><br />自動連投のため上限に達しやすい。
+            </li>
+            <li>
+              <i class="fa-solid fa-shield-halved"></i>
+              <strong>セキュリティの意識</strong
+              ><br />機密情報の入力には注意が必要です。
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Slide 8 -->
+      <div class="slide">
+        <h2 class="slide-title">指示書：AGENTS.md</h2>
+        <div class="content-area">
+          <div class="two-column">
+            <div class="card">
+              <p
+                style="
+                  font-weight: bold;
+                  font-size: 38px;
+                  color: var(--primary);
+                "
+              >
+                プロジェクトの「法典」
+              </p>
+              <p style="font-size: 28px; text-align: left; margin-top: 20px">
+                AIが最初に読み込み、基本ルールを自動で理解します。
+              </p>
+            </div>
+            <ul class="bullet-list">
+              <li><i class="fa-solid fa-check"></i> 仕様の書き込み</li>
+              <li><i class="fa-solid fa-check"></i> 手順の指定</li>
+              <li><i class="fa-solid fa-check"></i> 再説明を省く</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 9 -->
+      <div class="slide">
+        <h2 class="slide-title">本日のゴール</h2>
+        <div class="content-area">
+          <div class="timeline">
+            <div class="step">
+              <p style="font-weight: bold; font-size: 24px">慣れる</p>
+            </div>
+            <div class="step">
+              <p style="font-weight: bold; font-size: 24px">書く</p>
+            </div>
+            <div class="step">
+              <p style="font-weight: bold; font-size: 24px">作る</p>
+            </div>
+            <div class="step">
+              <p style="font-weight: bold; font-size: 24px">動く！</p>
+            </div>
+          </div>
+          <div class="highlight-box">
+            <p
+              style="font-size: 42px; font-weight: 900; margin: 0; color: #000"
+            >
+              「説明する力」が「開発力」になる
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 10 -->
       <div class="slide">
         <div class="title-layout">
           <h1 style="font-size: 150px">Q & A</h1>
-          <p class="subtitle" style="font-size: 48px">ご質問はありますか？</p>
+          <p class="subtitle">ご質問はありますか？</p>
           <div
             style="
               margin-top: 60px;
@@ -589,65 +589,65 @@
         </div>
       </div>
 
-      <div class="slide-number" id="pageNum">01 / 10</div>
+      <div class="slide-number" id="pageNumDisplay">01 / 10</div>
     </div>
 
     <div class="controls">
-      <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" disabled>
+      <button class="nav-btn" id="prevBtn" onclick="updateSlide(-1)" disabled>
         &lt;
       </button>
-      <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">
+      <button class="nav-btn" id="nextBtn" onclick="updateSlide(1)">
         &gt;
       </button>
     </div>
 
     <script>
-      let currentSlide = 0;
+      let activeIndex = 0;
 
-      function changeSlide(direction) {
+      function updateSlide(step) {
         const slides = document.querySelectorAll(".slide");
         const prevBtn = document.getElementById("prevBtn");
         const nextBtn = document.getElementById("nextBtn");
-        const pageNum = document.getElementById("pageNum");
+        const pageNum = document.getElementById("pageNumDisplay");
 
-        // 現在のスライドを非表示
-        slides[currentSlide].classList.remove("active");
+        // Hide current
+        slides[activeIndex].classList.remove("active");
 
-        // インデックスを更新
-        currentSlide += direction;
+        // Update index
+        activeIndex += step;
 
-        // 範囲制限
-        if (currentSlide < 0) currentSlide = 0;
-        if (currentSlide >= slides.length) currentSlide = slides.length - 1;
+        // Clamp
+        if (activeIndex < 0) activeIndex = 0;
+        if (activeIndex >= slides.length) activeIndex = slides.length - 1;
 
-        // 次のスライドを表示
-        slides[currentSlide].classList.add("active");
+        // Show new
+        slides[activeIndex].classList.add("active");
 
-        // ボタンの有効/無効切り替え
-        prevBtn.disabled = currentSlide === 0;
-        nextBtn.disabled = currentSlide === slides.length - 1;
+        // Update buttons
+        prevBtn.disabled = activeIndex === 0;
+        nextBtn.disabled = activeIndex === slides.length - 1;
 
-        // ページ番号更新
-        const currentNum = String(currentSlide + 1).padStart(2, "0");
-        const totalNum = String(slides.length).padStart(2, "0");
-        pageNum.textContent = `${currentNum} / ${totalNum}`;
+        // Update page number
+        const current = String(activeIndex + 1).padStart(2, "0");
+        const total = String(slides.length).padStart(2, "0");
+        pageNum.textContent = `${current} / ${total}`;
       }
 
-      // キーボード操作のリスナー登録
+      // Keyboard controls
       document.addEventListener("keydown", (e) => {
         if (e.key === "ArrowRight" || e.key === " " || e.key === "Enter") {
           e.preventDefault();
-          changeSlide(1);
+          updateSlide(1);
         }
         if (e.key === "ArrowLeft") {
           e.preventDefault();
-          changeSlide(-1);
+          updateSlide(-1);
         }
       });
 
-      // 初期化（念のため）
+      // Initialize display on load
       window.onload = () => {
-        changeSlide(0);
+        updateSlide(0);
       };
     </script>
   </body>
