@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AIエージェントと一緒にGASを作ろう</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700;900&family=JetBrains+Mono:wght@400;700&display=swap");
+
+      :root {
+        --bg: #ffffff;
+        --surface: #f1f5f9;
+        --surface2: #e2e8f0;
+        --accent: #0369a1;
+        --accent2: #4338ca;
+        --accent3: #047857;
+        --text: #0f172a;
+        --text-muted: #334155;
+        --border: rgba(3, 105, 161, 0.25);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Noto Sans JP", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        overflow: hidden;
+        height: 100vh;
+      }
+
+      .slides {
+        width: 100%;
+        height: 100vh;
+        position: relative;
+      }
+
+      .slide {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 60px 30px 100px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+      }
+
+      .slide.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      /* Grid background */
+      .slide::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(3, 105, 161, 0.06) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(3, 105, 161, 0.06) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+      }
+
+      /* Slide number */
+      .slide-num {
+        position: absolute;
+        bottom: 76px;
+        right: 40px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 22px;
+        color: var(--text-muted);
+        opacity: 0.6;
+      }
+
+      /* Tag line */
+      .tag {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 18px;
+        color: var(--accent);
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        opacity: 0.8;
+      }
+
+      h1 {
+        font-size: clamp(42px, 5.5vw, 72px);
+        font-weight: 900;
+        line-height: 1.2;
+        text-align: center;
+        background: linear-gradient(135deg, #0f172a 0%, #0369a1 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 24px;
+      }
+
+      h2 {
+        font-size: clamp(38px, 4.5vw, 56px);
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 32px;
+        color: var(--text);
+      }
+
+      .subtitle {
+        font-size: clamp(24px, 2.5vw, 32px);
+        color: var(--text-muted);
+        text-align: center;
+        line-height: 1.8;
+        max-width: 700px;
+      }
+
+      /* Cards */
+      .cards {
+        display: grid;
+        gap: 20px;
+        width: 100%;
+        max-width: 900px;
+      }
+
+      .cards-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+      .cards-3 {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px 20px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #0369a1, #4338ca);
+      }
+
+      .card-icon {
+        font-size: 36px;
+        margin-bottom: 12px;
+      }
+
+      .card-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 8px;
+      }
+
+      .card-text {
+        font-size: 24px;
+        color: var(--text-muted);
+        line-height: 1.7;
+      }
+
+      /* Compare table */
+      .compare {
+        width: 100%;
+        max-width: 900px;
+        border-collapse: collapse;
+        font-size: 26px;
+      }
+
+      .compare th {
+        padding: 14px 20px;
+        text-align: center;
+        font-weight: 700;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        color: var(--text);
+      }
+
+      .compare th.highlight {
+        color: var(--accent);
+        background: rgba(3, 105, 161, 0.06);
+      }
+
+      .compare td {
+        padding: 12px 20px;
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        text-align: center;
+        background: var(--surface);
+      }
+
+      .compare td.label {
+        text-align: left;
+        color: var(--text);
+        font-weight: 500;
+      }
+
+      .compare td.good {
+        color: var(--accent3);
+        font-weight: 600;
+      }
+
+      .compare td.neutral {
+        color: var(--accent2);
+      }
+
+      /* Flow */
+      .flow {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: 900px;
+      }
+
+      .flow-step {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 16px 20px;
+        text-align: center;
+        min-width: 130px;
+      }
+
+      .flow-step .step-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 16px;
+        color: var(--accent);
+        margin-bottom: 6px;
+        display: block;
+      }
+
+      .flow-step .step-label {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1.4;
+      }
+
+      .flow-step .step-sub {
+        font-size: 16px;
+        color: var(--text-muted);
+        margin-top: 4px;
+      }
+
+      .flow-arrow {
+        color: var(--accent);
+        font-size: 22px;
+        opacity: 0.6;
+      }
+
+      /* Code block */
+      .code-block {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 20px 24px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 24px;
+        color: var(--accent3);
+        max-width: 600px;
+        width: 100%;
+        line-height: 1.8;
+      }
+
+      .code-comment {
+        color: var(--text-muted);
+      }
+      .code-cmd {
+        color: var(--accent);
+      }
+
+      /* List */
+      .check-list {
+        list-style: none;
+        max-width: 800px;
+        width: 100%;
+      }
+
+      .check-list li {
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        font-size: 28px;
+        color: var(--text-muted);
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        line-height: 1.6;
+      }
+
+      .check-list li::before {
+        content: "▸";
+        color: var(--accent);
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      .check-list li strong {
+        color: var(--text);
+      }
+
+      /* Title slide decoration */
+      .glow {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        pointer-events: none;
+      }
+
+      .glow-1 {
+        width: 400px;
+        height: 400px;
+        background: rgba(3, 105, 161, 0.06);
+        top: -100px;
+        right: -100px;
+      }
+
+      .glow-2 {
+        width: 300px;
+        height: 300px;
+        background: rgba(67, 56, 202, 0.05);
+        bottom: -80px;
+        left: -80px;
+      }
+
+      /* Navigation */
+      .nav {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 12px;
+        z-index: 100;
+      }
+
+      .nav button {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 10px 24px;
+        border-radius: 8px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .nav button:hover {
+        background: rgba(56, 189, 248, 0.15);
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .nav .dots {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--text-muted);
+        opacity: 0.4;
+        transition: all 0.3s;
+      }
+
+      .dot.active {
+        opacity: 1;
+        background: var(--accent);
+        width: 18px;
+        border-radius: 3px;
+      }
+
+      .accent-blue {
+        color: var(--accent);
+      }
+      .accent-purple {
+        color: var(--accent2);
+      }
+      .accent-green {
+        color: var(--accent3);
+      }
+
+      .big-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 16px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 4px 12px;
+        border-radius: 4px;
+        margin-bottom: 8px;
+        display: inline-block;
+      }
+
+      .label-blue {
+        background: rgba(3, 105, 161, 0.12);
+        color: var(--accent);
+        border: 1px solid rgba(3, 105, 161, 0.4);
+        font-weight: 700;
+      }
+      .label-purple {
+        background: rgba(67, 56, 202, 0.1);
+        color: var(--accent2);
+        border: 1px solid rgba(67, 56, 202, 0.35);
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slides">
+      <!-- Slide 1: タイトル -->
+      <div class="slide active" id="slide-1">
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+        <div class="tag"></div>
+        <h1>AIエージェントと一緒に<br />はじめてのGASを作ろう</h1>
+        <p class="subtitle">
+          Codex CLI × clasp × AGENTS.md<br />
+          コードを書かずに、自動化を体験する3時間
+        </p>
+        <div class="slide-num">01 / 10</div>
+      </div>
+
+      <!-- Slide 2: 今日のゴール -->
+      <div class="slide" id="slide-2">
+        <div class="tag">Today's Goal</div>
+        <h2>今日の終わりにできること</h2>
+        <ul class="check-list">
+          <li>
+            <strong>ローカル開発環境</strong>が整っている（clasp + Codex CLI）
+          </li>
+          <li>
+            <strong>AGENTS.md</strong> に仕様を書くだけでコードが生成される体験
+          </li>
+          <li>GmailのメールをGoogleスプレッドシートに自動まとめる→GASが動く</li>
+          <li>Codexに話しかけて<strong>仕様変更</strong>までできる</li>
+          <li>変更履歴が<strong>GitHubに残っている</strong></li>
+        </ul>
+        <div class="slide-num">02 / 10</div>
+      </div>
+
+      <!-- Slide 3: なぜCodex CLIか -->
+      <div class="slide" id="slide-3">
+        <div class="tag">Why Codex CLI?</div>
+        <h2>なぜ Codex CLI を選ぶのか</h2>
+        <div class="cards cards-3">
+          <div class="card">
+            <div class="card-icon">💬</div>
+            <div class="card-title">ChatGPT Plusで使える</div>
+            <div class="card-text">
+              すでに持っているアカウントでそのままログインできる。追加コストなし。
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-icon">📄</div>
+            <div class="card-title">AGENTS.mdが指示書</div>
+            <div class="card-text">
+              「何を作るか」を日本語で書いておくと、毎回同じ方針でコードを生成してくれる。
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-icon">⌨️</div>
+            <div class="card-title">ターミナルから1コマンド</div>
+            <div class="card-text">
+              環境構築が済んでいれば
+              <code style="color: var(--accent3); font-family: monospace"
+                >codex</code
+              >
+              を打つだけ。IDEの切り替え不要。
+            </div>
+          </div>
+        </div>
+        <div class="slide-num">03 / 10</div>
+      </div>
+
+      <!-- Slide 4: Codex vs Antigravity -->
+      <div class="slide" id="slide-4">
+        <div class="tag">Comparison</div>
+        <h2>Codex CLI vs Google Antigravity</h2>
+        <table class="compare">
+          <thead>
+            <tr>
+              <th style="text-align: left">項目</th>
+              <th class="highlight">Codex CLI</th>
+              <th>Google Antigravity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="label">提供元</td>
+              <td class="good">OpenAI</td>
+              <td>Google</td>
+            </tr>
+            <tr>
+              <td class="label">動作形式</td>
+              <td class="good">ターミナル（CLI）</td>
+              <td>専用IDE（VS Codeフォーク）</td>
+            </tr>
+            <tr>
+              <td class="label">認証方法</td>
+              <td class="good">ChatGPT Plusで即使える</td>
+              <td>Googleアカウント（無料プレビュー）</td>
+            </tr>
+            <tr>
+              <td class="label">指示の方法</td>
+              <td class="good">AGENTS.md（テキストファイル）</td>
+              <td>Manager ViewのUIから入力</td>
+            </tr>
+            <tr>
+              <td class="label">コミット自動化</td>
+              <td class="good">AGENTS.mdで指示可能</td>
+              <td>Artifactsで確認後に操作</td>
+            </tr>
+            <tr>
+              <td class="label">対象ユーザー</td>
+              <td class="good">ターミナルに慣れた人向け</td>
+              <td>IDE操作に慣れた人向け</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="slide-num">04 / 10</div>
+      </div>
+
+      <!-- Slide 5: 今日の流れ -->
+      <div class="slide" id="slide-5">
+        <div class="tag">Agenda</div>
+        <h2>今日の進め方</h2>
+        <div class="flow">
+          <div class="flow-step">
+            <span class="step-num">STEP 1</span>
+            <div class="step-label">環境構築</div>
+            <div class="step-sub">nvm / clasp / Codex CLI</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <span class="step-num">STEP 2</span>
+            <div class="step-label">GitHub設定</div>
+            <div class="step-sub">リポジトリ / git基本操作</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <span class="step-num">STEP 3</span>
+            <div class="step-label">clasp設定</div>
+            <div class="step-sub">GASプロジェクト作成</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <span class="step-num">STEP 4</span>
+            <div class="step-label">AGENTS.md作成</div>
+            <div class="step-sub">仕様を日本語で書く</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <span class="step-num">STEP 5</span>
+            <div class="step-label">codex 実行</div>
+            <div class="step-sub">コード自動生成・コミット</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <span class="step-num">STEP 6</span>
+            <div class="step-label">仕様変更体験</div>
+            <div class="step-sub">Codexに話しかける</div>
+          </div>
+        </div>
+        <div class="slide-num">05 / 10</div>
+      </div>
+
+      <!-- Slide 6: セーブポイントの考え方 -->
+      <div class="slide" id="slide-6">
+        <div class="tag">Git Strategy</div>
+        <h2>セーブポイントとして git を使う</h2>
+        <div class="cards cards-2" style="max-width: 900px">
+          <div class="card">
+            <div class="card-icon">💾</div>
+            <div class="card-title">Codex実行前（手動）</div>
+            <div class="card-text" style="margin-bottom: 16px">
+              AIがファイルを書き換える前に、今の状態を保存しておく。何かあっても戻せる。
+            </div>
+            <div class="code-block" style="font-size: 21px; padding: 12px 16px">
+              <span class="code-comment"># セーブポイントを作る</span><br />
+              <span class="code-cmd">git add .</span><br />
+              <span class="code-cmd">git commit -m "chore: Codex実行前"</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🤖</div>
+            <div class="card-title">Codex実行後（自動）</div>
+            <div class="card-text" style="margin-bottom: 16px">
+              AGENTS.md の指示通り、Codex
+              がコンベンショナルコミット形式で自動記録する。
+            </div>
+            <div class="code-block" style="font-size: 21px; padding: 12px 16px">
+              <span class="code-comment"># Codexが自動でコミット</span><br />
+              <span class="code-cmd">feat: Gmail一覧化GASを作成</span><br />
+              <span class="code-comment"># あとはpushするだけ</span><br />
+              <span class="code-cmd">git push</span>
+            </div>
+          </div>
+        </div>
+        <div class="slide-num">06 / 10</div>
+      </div>
+
+      <!-- Slide 7: AGENTS.mdとは -->
+      <div class="slide" id="slide-7">
+        <div class="tag">Key Concept</div>
+        <h2>AGENTS.md ＝ AIへの指示書</h2>
+        <div class="cards cards-2" style="max-width: 950px">
+          <div class="card">
+            <div class="card-icon">📝</div>
+            <div class="card-title">書くこと</div>
+            <div class="card-text">
+              ・プロジェクトの概要<br />
+              ・作りたい機能の仕様<br />
+              ・コードの書き方のルール<br />
+              ・gitコミットの方針<br /><br />
+              → 日本語でOK。箇条書きでOK。
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-icon">✨</div>
+            <div class="card-title">何が嬉しいか</div>
+            <div class="card-text">
+              ・毎回プロンプトを考えなくていい<br />
+              ・チームで同じ方針を共有できる<br />
+              ・仕様変更はファイルを更新するだけ<br />
+              ・使うほど「自分の仕様書」に育つ<br /><br />
+              → 書き方が上手くなるほど作れるものが増える
+            </div>
+          </div>
+        </div>
+        <div class="slide-num">07 / 10</div>
+      </div>
+
+      <!-- Slide 8: 仕様変更の体験 -->
+      <div class="slide" id="slide-8">
+        <div class="tag">Step 6</div>
+        <h2>Codex に話しかけて仕様を変える</h2>
+        <div
+          class="flow"
+          style="
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-start;
+            max-width: 820px;
+          "
+        >
+          <div
+            style="display: flex; align-items: center; gap: 16px; width: 100%"
+          >
+            <div class="big-label label-blue">あなた</div>
+            <div
+              style="
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                padding: 14px 20px;
+                font-size: 22px;
+                color: var(--text);
+                flex: 1;
+              "
+            >
+              「送信者のメールアドレスだけを抽出した列も追加したい」
+            </div>
+          </div>
+          <div
+            style="
+              padding-left: 24px;
+              color: var(--text-muted);
+              font-size: 21px;
+            "
+          >
+            ▼ Codex が自動で実行
+          </div>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: 1fr 1fr 1fr;
+              gap: 12px;
+              width: 100%;
+            "
+          >
+            <div class="card" style="padding: 14px">
+              <div
+                style="
+                  font-size: 24px;
+                  color: var(--accent);
+                  font-family: monospace;
+                  margin-bottom: 6px;
+                "
+              >
+                ① 仕様整理
+              </div>
+              <div style="font-size: 21px; color: var(--text-muted)">
+                AGENTS.mdに変更内容を追記
+              </div>
+            </div>
+            <div class="card" style="padding: 14px">
+              <div
+                style="
+                  font-size: 24px;
+                  color: var(--accent);
+                  font-family: monospace;
+                  margin-bottom: 6px;
+                "
+              >
+                ② コード修正
+              </div>
+              <div style="font-size: 21px; color: var(--text-muted)">
+                Code.jsを仕様通りに更新
+              </div>
+            </div>
+            <div class="card" style="padding: 14px">
+              <div
+                style="
+                  font-size: 24px;
+                  color: var(--accent3);
+                  font-family: monospace;
+                  margin-bottom: 6px;
+                "
+              >
+                ③ 自動コミット
+              </div>
+              <div style="font-size: 21px; color: var(--text-muted)">
+                feat: メールアドレス列を追加
+              </div>
+            </div>
+          </div>
+          <div
+            style="font-size: 22px; color: var(--text-muted); padding-left: 4px"
+          >
+            あとは
+            <span style="color: var(--accent); font-family: monospace"
+              >clasp push</span
+            >
+            →
+            <span style="color: var(--accent); font-family: monospace"
+              >git push</span
+            >
+            するだけ
+          </div>
+        </div>
+        <div class="slide-num">08 / 10</div>
+      </div>
+
+      <!-- Slide 9: Codex CLI vs Claude Code -->
+      <div class="slide" id="slide-9">
+        <div class="tag">Tool Selection</div>
+        <h2>Codex CLI vs Claude Code</h2>
+        <table class="compare">
+          <thead>
+            <tr>
+              <th style="text-align: left">項目</th>
+              <th class="highlight">Codex CLI</th>
+              <th>Claude Code</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="label">提供元</td>
+              <td>OpenAI</td>
+              <td class="good">Anthropic</td>
+            </tr>
+            <tr>
+              <td class="label">利用に必要なもの</td>
+              <td class="good">
+                ChatGPT Plus（月$20）<br /><span
+                  style="font-size: 21px; color: var(--text-muted)"
+                  >すでに持っていれば追加費用ゼロ</span
+                >
+              </td>
+              <td class="neutral">
+                Claude Pro（月$20）〜<br /><span
+                  style="font-size: 21px; color: var(--text-muted)"
+                  >本格利用はMax $100〜が現実的</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td class="label">指示ファイル</td>
+              <td>AGENTS.md</td>
+              <td class="good">
+                CLAUDE.md<br /><span
+                  style="font-size: 21px; color: var(--text-muted)"
+                  >同じ考え方、書き方も似ている</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td class="label">コーディング性能</td>
+              <td>高い</td>
+              <td class="good">
+                より高い<br /><span
+                  style="font-size: 21px; color: var(--text-muted)"
+                  >複雑な指示の理解・複数ファイル操作が得意</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td class="label">今日使う理由</td>
+              <td class="good">ChatGPT Plus があれば今すぐ使える</td>
+              <td>別途サブスクが必要</td>
+            </tr>
+          </tbody>
+        </table>
+        <p
+          style="
+            margin-top: 24px;
+            font-size: 24px;
+            color: var(--text-muted);
+            text-align: center;
+            max-width: 800px;
+          "
+        >
+          💡
+          <strong style="color: var(--text)"
+            >AGENTS.md の書き方はそのまま CLAUDE.md に応用できます。</strong
+          ><br />
+          今日身につけた「指示書を書く力」は Claude Code に移っても活きます。
+        </p>
+        <div class="slide-num">09 / 10</div>
+      </div>
+
+      <!-- Slide 10: まとめ -->
+      <div class="slide" id="slide-10">
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+        <div class="tag">Wrap Up</div>
+        <h2>今日持ち帰れること</h2>
+        <ul class="check-list" style="max-width: 900px">
+          <li>
+            「作りたいものを日本語で書く」だけでコードが生まれる<strong
+              >体験</strong
+            >
+          </li>
+          <li>AGENTS.md という<strong>自分だけの指示書</strong>の作り方</li>
+          <li>Codex + clasp + git の<strong>再現できるワークフロー</strong></li>
+          <li>
+            次は何を作る？　アイデアを持ち帰って<strong>続けられる環境</strong>
+          </li>
+        </ul>
+        <p class="subtitle" style="margin-top: 32px; font-size: 22px">
+          参考記事：<a
+            href="https://library.libecity.com/articles/01KHSAPB7RTK18HWKAYBHEY2X4"
+            >ノウハウ図書館「Codex CLIとclaspでGASをローカル開発しよう」</a
+          >
+        </p>
+        <div class="slide-num">10 / 10</div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+      <button onclick="prev()">← 前へ</button>
+      <div class="dots" id="dots"></div>
+      <button onclick="next()">次へ →</button>
+    </nav>
+
+    <script>
+      const total = 10;
+      let current = 1;
+
+      function buildDots() {
+        const dots = document.getElementById("dots");
+        for (let i = 1; i <= total; i++) {
+          const d = document.createElement("div");
+          d.className = "dot" + (i === 1 ? " active" : "");
+          d.onclick = () => goTo(i);
+          d.style.cursor = "pointer";
+          dots.appendChild(d);
+        }
+      }
+
+      function goTo(n) {
+        document.getElementById("slide-" + current).classList.remove("active");
+        document
+          .querySelectorAll(".dot")
+          [current - 1].classList.remove("active");
+        current = n;
+        document.getElementById("slide-" + current).classList.add("active");
+        document.querySelectorAll(".dot")[current - 1].classList.add("active");
+      }
+
+      function next() {
+        if (current < total) goTo(current + 1);
+      }
+      function prev() {
+        if (current > 1) goTo(current - 1);
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight" || e.key === "ArrowDown") next();
+        if (e.key === "ArrowLeft" || e.key === "ArrowUp") prev();
+      });
+
+      buildDots();
+    </script>
+  </body>
+</html>
